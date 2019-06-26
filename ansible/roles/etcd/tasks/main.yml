@@ -1,0 +1,61 @@
+---
+- name: configure kubelet
+  copy:
+    src: etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
+    dest: /etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
+
+- name: enable kubelet service
+  systemd:
+    name: kubelet
+    state: restarted # TODO: Only restart the kubelet if the above configuration changed
+    enabled: True
+    daemon_reload: True
+
+- name: generate etcd ca certificate
+  command: /usr/bin/kubeadm init phase certs etcd-ca
+  run_once: True
+  delegate_to: "{{ groups['etcd'][0] }}"
+  
+- name: slurp the etcd ca certificate and key
+  slurp:
+    src: "/etc/kubernetes/pki/etcd/{{ item }}"
+  run_once: True
+  delegate_to: "{{ groups['etcd'][0] }}"
+  register: etcd_ca_pki
+  with_items:
+  - ca.crt
+  - ca.key
+
+- name: ensure etcd pki directory exists
+  file:
+    dest: /etc/kubernetes/pki/etcd
+    state: directory
+    owner: root
+    group: root
+
+- name: distribute etcd ca certificate and key
+  no_log: True
+  copy:
+    dest: "{{ item.source }}"
+    content: "{{ item.content | b64decode }}"
+    owner: root
+    group: root
+    mode: 0700
+  with_items: "{{ etcd_ca_pki.results }}"
+  when: inventory_hostname != groups['etcd'][0]
+  
+- name: drop kubeadm configuration file
+  template:
+    src: etc/kubernetes/kubeadm-etcd.yaml
+    dest: /etc/kubernetes/kubeadm-etcd.yaml
+
+- name: generate etcd certificates
+  command: "/usr/bin/kubeadm init phase certs {{ item }} --config /etc/kubernetes/kubeadm-etcd.yaml"
+  with_items:
+  - etcd-server
+  - etcd-peer
+  - etcd-healthcheck-client
+  - apiserver-etcd-client
+
+- name: generate etcd static pod manifest
+  command: "/usr/bin/kubeadm init phase etcd local --config /etc/kubernetes/kubeadm-etcd.yaml"

@@ -1,0 +1,14 @@
+---
+common_debs:
+- openssh-client
+- openssh-server
+- apt-transport-https
+- python-pip
+- python-requests
+- ebtables
+- socat
+- ntp
+- jq
+- nfs-client
+- cloud-utils
+- dnsutils

@@ -1,0 +1,14 @@
+*.plan
+**/.terraform/*
+*.tfstate*
+.idea/*
+.idea
+
+*.vscode
+
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+scripts/*-vmware

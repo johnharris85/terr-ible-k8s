@@ -1,0 +1,17 @@
+apiVersion: "kubeadm.k8s.io/v1beta1"
+kind: ClusterConfiguration
+kubernetesVersion: "{{ k8s_version }}"
+etcd:
+  local:
+    serverCertSANs:
+    - "{{ ansible_default_ipv4.address }}"
+    peerCertSANs:
+    - "{{ ansible_default_ipv4.address }}"
+    extraArgs:
+      initial-cluster: etcd0=https://{{ groups['etcd'][0] }}:2380,etcd1=https://{{ groups['etcd'][1] }}:2380,etcd2=https://{{ groups['etcd'][2] }}:2380
+      initial-cluster-state: new
+      name: etcd{{ groups.etcd.index(inventory_hostname) }}
+      listen-peer-urls: https://{{ ansible_default_ipv4.address }}:2380
+      listen-client-urls: https://{{ ansible_default_ipv4.address }}:2379
+      advertise-client-urls: https://{{ ansible_default_ipv4.address }}:2379
+      initial-advertise-peer-urls: https://{{ ansible_default_ipv4.address }}:2380

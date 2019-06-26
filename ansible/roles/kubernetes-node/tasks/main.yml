@@ -1,0 +1,38 @@
+---
+- name: Ensure target directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /opt/cni/bin
+    - /etc/kubernetes/
+    - /var/log/journal
+
+- name: Wait for K8S API service to be accessible
+  wait_for:
+    host: "{{ cluster_fqdn }}"
+    port: "6443"
+    sleep: 15
+    timeout: 1800
+
+- name: Set first master fact
+  set_fact:
+    first_master: "{{ groups['master'][0] }}"
+
+- set_fact:
+    kubeadm_join: "{{ hostvars[first_master].kubeadm_join }}"
+
+- name: Parse bootstrap token and ca cert hash 
+  set_fact:
+    bootstrap_token: "{{ kubeadm_join.split(' ')[4] }}"
+    ca_cert_hash: "{{ kubeadm_join.split(' ')[6] }}"
+
+- name: Create join config
+  template:
+    src: kubeadm-join-config.yaml.j2
+    dest: /etc/kubernetes/kubeadm-join-config.yaml
+
+- name: Run kubeadm join
+  command: kubeadm join --config=/etc/kubernetes/kubeadm-join-config.yaml
+  args:
+    creates: /etc/cni/net.d/calico-kubeconfig

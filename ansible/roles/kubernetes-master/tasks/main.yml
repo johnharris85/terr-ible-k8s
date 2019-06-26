@@ -1,0 +1,131 @@
+---
+- name: Set first master fact
+  set_fact:
+    first_master: "{{ groups['master'][0] }}"
+
+- debug: var=first_master
+
+- name: determine whether kubeadm needs to be run
+  stat:
+    path: /etc/kubernetes/manifests/kube-apiserver.yaml
+  register: kubeadm_apiserver_manifest
+
+- name: ensure etcd pki directory exists
+  file:
+    dest: /etc/kubernetes/pki/etcd
+    state: directory
+
+- name: slurp the client cert and key for etcd communication
+  slurp:
+    src: "/etc/kubernetes/pki/{{ item }}"
+  with_items:
+    - apiserver-etcd-client.crt
+    - apiserver-etcd-client.key
+    - etcd/ca.crt
+  register: etcd_certs
+  delegate_to: "{{ groups['etcd'][0] }}"
+  when: inventory_hostname == first_master
+
+- name: distribute the certificates
+  copy:
+    dest: "{{ item.source }}"
+    content: "{{ item.content | b64decode }}"
+    mode: 0700 # TODO: check these permissions
+  with_items: "{{ etcd_certs.results }}"
+  no_log: True
+
+- name: Create k8s-audit log directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /var/log/k8s-audit/
+
+# Add audit-policy in pki folder so it gets mounted by the apiserver container
+- name: Copy audit configuration file
+  template:
+    src: audit-policy.yaml.j2
+    dest: /etc/kubernetes/pki/audit-policy.yaml
+    mode: 0644
+
+- name: Get some random string
+  set_fact:
+    random_string: "{{ lookup('pipe', 'head -c 32 /dev/urandom | base64') }}"
+  when: inventory_hostname == first_master
+
+- name: Copy ETCD encryption config
+  template:
+    src: etcd-encryption-config.yaml.j2
+    dest: /etc/kubernetes/pki/etcd-encryption-config.yaml
+    mode: 0644
+    force: no
+
+- name: drop kubeadm configuration file
+  template:
+    src: etc/kubernetes/kubeadm-master-config.yaml.j2
+    dest: /etc/kubernetes/kubeadm-master-config.yaml
+    mode: 0644
+
+- name: Pre-pull master images
+  command: kubeadm config images pull --config=/etc/kubernetes/pki/kubeadm-master-config.yaml
+
+- name: Run kubeadm init
+  command: kubeadm init --config=/etc/kubernetes/pki/kubeadm-master-config.yaml -v 9
+  args:
+    creates: /etc/kubernetes/manifests/kube-apiserver.yaml
+  when: inventory_hostname == first_master
+
+- name: Copy calico manifest
+  template:
+    src: calico.yaml.j2
+    dest: /etc/kubernetes/calico.yaml
+  when: inventory_hostname == first_master
+
+- name: Apply calico manifest
+  command: kubectl apply -f /etc/kubernetes/calico.yaml
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  when: inventory_hostname == first_master
+
+- name: Create join token
+  command: kubeadm token create --print-join-command --ttl 5m
+  register: result
+  when: inventory_hostname == first_master
+
+- name: Set join command fact
+  set_fact:
+    kubeadm_join: "{{ result.stdout|trim }}"
+  run_once: True
+
+- debug: var=kubeadm_join
+
+- name: slurp the ca certificate and key
+  slurp:
+    src: "/etc/kubernetes/{{ item }}"
+  with_items:
+    - pki/ca.crt
+    - pki/ca.key
+    - pki/front-proxy-ca.crt
+    - pki/front-proxy-ca.key
+    - pki/sa.key
+    - pki/sa.pub
+  register: kube_pki
+  when: inventory_hostname == first_master
+
+
+- name: add kube pki assets
+  no_log: True
+  copy:
+    dest: "{{ item.source }}"
+    content: "{{ item.content | b64decode }}"
+    owner: root
+    group: root
+    mode: 0700
+  with_items: "{{ kube_pki.results }}"
+  when: inventory_hostname != first_master
+
+- name: Run kubeadm join
+  command: "{{ kubeadm_join }} --experimental-control-plane"
+  args:
+    creates: /etc/kubernetes/manifests/kube-apiserver.yaml
+  when: inventory_hostname != first_master

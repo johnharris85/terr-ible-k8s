@@ -1,0 +1,13 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: JoinConfiguration
+discovery:
+  bootstrapToken:
+    token: {{ bootstrap_token }}
+    apiServerEndpoint: {{ cluster_fqdn }}:6443
+    caCertHashes:
+      - {{ ca_cert_hash }}
+nodeRegistration:
+  kubeletExtraArgs:
+    node-labels: node-role.kubernetes.io/worker=,kube.verizon.com/ami-state=new,kube.verizon.com/cluster-name={{ cluster_name }}
+    event-qps: "0"

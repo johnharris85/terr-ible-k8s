@@ -1,0 +1,31 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: InitConfiguration
+localAPIEndpoint:
+  bindPort: 443
+nodeRegistration:
+  kubeletExtraArgs:
+    event-qps: "0"
+---
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+kubernetesVersion: "{{ k8s_version }}"
+controlPlaneEndpoint: "{{ cluster_fqdn }}:6443"
+apiServer:
+  certSANs:
+    - "{{ cluster_fqdn }}"
+  extraArgs:
+    audit-log-maxage: "30"
+    audit-log-maxbackup: "3"
+    audit-log-maxsize: "100"
+    audit-log-path: "/var/log/k8s-audit/audit.log"
+    audit-policy-file: "/etc/kubernetes/pki/audit-policy.yaml"
+etcd:
+  external:
+    endpoints:
+    - https://{{ groups['etcd'][0] }}:2379
+    - https://{{ groups['etcd'][1] }}:2379
+    - https://{{ groups['etcd'][2] }}:2379
+    caFile: /etc/kubernetes/pki/etcd/ca.crt
+    certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
+    keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key

@@ -1,0 +1,75 @@
+---
+- name: comment out any swap in fstab
+  lineinfile:
+    path: '/etc/fstab'
+    regexp: '^(.*\s+none\s+swap.*)'
+    line: '# removed by wardroom \1'
+    backrefs: yes
+
+- name: disable swap
+  command: swapoff -a
+  
+- name: set ipv4 routing
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: add the kubernetes apt repo key
+  apt_key:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    state: present
+  register: apt_key_result
+  until: apt_key_result is success
+  retries: 5
+  delay: 5
+
+- name: add the kubernetes apt repo
+  apt_repository:
+    repo: "deb http://apt.kubernetes.io/ {{ ansible_distribution_release | kube_debian_distro_version }} main"
+    update_cache: True
+    state: present
+  register: apt_respository_result
+  until: apt_respository_result is success
+  retries: 5
+  delay: 5
+
+- name: install kubernetes packages
+  apt:
+    update_cache: True
+    cache_valid_time: 60
+    name:
+      - "kubelet={{ kubernetes_version | kube_platform_version('debian') }}"
+      - "kubeadm={{ kubernetes_version | kube_platform_version('debian') }}"
+      - "kubectl={{ kubernetes_version | kube_platform_version('debian') }}"
+      - "kubernetes-cni={{cni_version | kube_platform_version('debian') }}"
+  register: apt_result
+  until: apt_result is success
+  retries: 5
+  delay: 5
+
+- name: Ensure drop-in folder for kubelet exists
+  file:
+    path: /etc/systemd/system/kubelet.service.d
+    state: directory
+    mode: 0755
+
+- name: Ensure 10-kubeadm.conf exists
+  copy:
+    src: 10-kubeadm.conf
+    dest: /etc/systemd/system/kubelet.service.d/
+    mode: 0644
+
+- name: ensure that the kubelet is running
+  service:
+    name: kubelet
+    state: started
+    enabled: true
+
+- name: set kubernetes version file
+  template:
+    dest: /etc/kubernetes_community_ami_version
+    src: etc/kubernetes_community_ami_version
+
