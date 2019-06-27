@@ -70,7 +70,7 @@
   command: kubeadm config images pull --config=/etc/kubernetes/kubeadm-master-config.yaml
 
 - name: Run kubeadm init
-  command: kubeadm init --config=/etc/kubernetes/kubeadm-master-config.yaml -v 9
+  command: kubeadm init --node-name=$(curl http://169.254.169.254/latest/meta-data/local-hostname) --config=/etc/kubernetes/kubeadm-master-config.yaml -v 9
   args:
     creates: /etc/kubernetes/manifests/kube-apiserver.yaml
   when: inventory_hostname == first_master
@@ -125,7 +125,7 @@
   when: inventory_hostname != first_master
 
 - name: Run kubeadm join
-  command: "{{ kubeadm_join }} --experimental-control-plane"
+  command: "{{ kubeadm_join }} --node-name=$(curl http://169.254.169.254/latest/meta-data/local-hostname) --experimental-control-plane"
   args:
     creates: /etc/kubernetes/manifests/kube-apiserver.yaml
   when: inventory_hostname != first_master

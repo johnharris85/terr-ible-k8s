@@ -68,11 +68,12 @@
     dest: /etc/systemd/system/kubelet.service.d/20-cloud-provider.conf
     mode: 0644
 
-- name: ensure that the kubelet is running
-  service:
+- name: restart service kubelet
+  systemd:
+    state: restarted
+    daemon_reload: yes
     name: kubelet
-    state: started
-    enabled: true
+    enabled: yes
 
 - name: set kubernetes version file
   template:
