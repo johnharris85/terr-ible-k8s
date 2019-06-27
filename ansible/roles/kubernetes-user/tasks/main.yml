@@ -20,13 +20,12 @@
 
 - name: setup the kubeconfig
   copy:
-    remote_src: True
-    content: "{{ kubeconfig.content }}"
+    # remote_src: True
+    content: "{{ kubeconfig.content | b64decode }}"
     dest: "/home/ubuntu/.kube/config"
     owner: "ubuntu"
     group: "ubuntu"
     mode: 0600
-    no_log: True
 
 - name: configure bash completion
   lineinfile:

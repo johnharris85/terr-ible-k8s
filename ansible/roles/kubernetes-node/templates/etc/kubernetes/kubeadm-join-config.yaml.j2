@@ -4,10 +4,10 @@ kind: JoinConfiguration
 discovery:
   bootstrapToken:
     token: {{ bootstrap_token }}
-    apiServerEndpoint: {{ cluster_fqdn }}:6443
+    apiServerEndpoint: {{ cluster_fqdn }}:443
     caCertHashes:
       - {{ ca_cert_hash }}
 nodeRegistration:
   kubeletExtraArgs:
-    node-labels: node-role.kubernetes.io/worker=,kube.verizon.com/ami-state=new,kube.verizon.com/cluster-name={{ cluster_name }}
+    node-labels: node-role.kubernetes.io/worker=
     event-qps: "0"

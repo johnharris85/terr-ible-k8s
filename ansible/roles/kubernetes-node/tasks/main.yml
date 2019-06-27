@@ -25,14 +25,23 @@
 - name: Parse bootstrap token and ca cert hash 
   set_fact:
     bootstrap_token: "{{ kubeadm_join.split(' ')[4] }}"
-    ca_cert_hash: "{{ kubeadm_join.split(' ')[6] }}"
+    ca_cert_hash: "{{ kubeadm_join.split(' ')[10] }}"
 
 - name: Create join config
   template:
-    src: kubeadm-join-config.yaml.j2
+    src: etc/kubernetes/kubeadm-join-config.yaml.j2
     dest: /etc/kubernetes/kubeadm-join-config.yaml
 
+- name: Get DNS from metadata service
+  uri:
+    url: http://169.254.169.254/latest/meta-data/local-hostname
+    return_content: yes
+  register: command_output
+
+- set_fact:
+    local_dns: "{{ command_output.content }}"
+
 - name: Run kubeadm join
-  command: kubeadm join --config=/etc/kubernetes/kubeadm-join-config.yaml
+  command: kubeadm join --node-name={{ local_dns }} --config=/etc/kubernetes/kubeadm-join-config.yaml
   args:
     creates: /etc/cni/net.d/calico-kubeconfig
