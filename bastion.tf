@@ -73,3 +73,20 @@ data "template_file" "bastion-userdata" {
     extra_vars_content = "${data.template_file.extra_vars.rendered}"
   }
 }
+
+resource "null_resource" "ansible" {
+
+  connection = {
+    type         = "ssh"
+    user         = "ubuntu"
+    host         = "${aws_instance.ubuntu.public_ip}"
+    agent  = "True"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "while [ ! -f /bootstrap/terr-ible-k8s/ansible/playbook.yaml ]; do sleep 2; done",
+      "ansible-playbook -i /bootstrap/inventory.ini -e @/bootstrap/extra_vars.yaml /bootstrap/terr-ible-k8s/ansible/playbook.yaml"
+    ]
+  }
+}
