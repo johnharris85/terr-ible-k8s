@@ -5,7 +5,6 @@
     - common
     - docker
     - kubernetes
-    - kubernetes-user
     
 - hosts: etcd
   become: yes

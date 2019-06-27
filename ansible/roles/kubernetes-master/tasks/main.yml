@@ -32,7 +32,7 @@
     content: "{{ item.content | b64decode }}"
     mode: 0700 # TODO: check these permissions
   with_items: "{{ etcd_certs.results }}"
-  no_log: True
+  # no_log: True
 
 - name: Create k8s-audit log directory
   file:

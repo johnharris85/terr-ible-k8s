@@ -12,7 +12,7 @@ main_vpc_public_subnets = ["10.2.4.0/24", "10.2.5.0/24", "10.2.6.0/24"]
 
 bootstrap_docker_version = "18.09.4"
 
-bootstrap_K8S_VERSION = "v1.14.3+vmware.1"
+bootstrap_K8S_VERSION = "v1.14.3"
 
 bootstrap_CNI_VERSION = "0.7.5"
 
