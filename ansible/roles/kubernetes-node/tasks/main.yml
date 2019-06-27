@@ -20,7 +20,7 @@
     first_master: "{{ groups['master'][0] }}"
 
 - set_fact:
-    kubeadm_join: "{{ hostvars[first_master].kubeadm_join }}"
+    kubeadm_join: "{{ hostvars[groups['master'][0]]['kubeadm_join'] }}"
 
 - name: Parse bootstrap token and ca cert hash 
   set_fact:

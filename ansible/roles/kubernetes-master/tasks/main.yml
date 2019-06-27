@@ -69,12 +69,14 @@
 - name: Pre-pull master images
   command: kubeadm config images pull --config=/etc/kubernetes/kubeadm-master-config.yaml
 
-- name: Create variable from command
-  command: "curl http://169.254.169.254/latest/meta-data/local-hostname"
+- name: Get DNS from metadata service
+  uri:
+    url: http://169.254.169.254/latest/meta-data/local-hostname
+    return_content: yes
   register: command_output
 
 - set_fact:
-    local_dns: "{{ command_output.stdout }}"
+    local_dns: "{{ command_output.content }}"
 
 - name: Run kubeadm init
   command: kubeadm init --node-name={{ local_dns }} --config=/etc/kubernetes/kubeadm-master-config.yaml -v 9
@@ -95,7 +97,7 @@
   when: inventory_hostname == first_master
 
 - name: Create join token
-  command: kubeadm token create --print-join-command --ttl 5m
+  command: kubeadm token create --print-join-command --ttl 30m
   register: result
   when: inventory_hostname == first_master
 
@@ -117,8 +119,7 @@
     - pki/sa.key
     - pki/sa.pub
   register: kube_pki
-  when: inventory_hostname == first_master
-
+  delegate_to: "{{ groups['master'][0] }}"
 
 - name: add kube pki assets
   no_log: True
