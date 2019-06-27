@@ -2,7 +2,7 @@
 apiVersion: kubeadm.k8s.io/v1beta1
 kind: InitConfiguration
 localAPIEndpoint:
-  bindPort: 443
+  bindPort: 6443
 nodeRegistration:
   kubeletExtraArgs:
     event-qps: "0"
@@ -10,7 +10,7 @@ nodeRegistration:
 apiVersion: kubeadm.k8s.io/v1beta1
 kind: ClusterConfiguration
 kubernetesVersion: "{{ k8s_version }}"
-controlPlaneEndpoint: "{{ cluster_fqdn }}:6443"
+controlPlaneEndpoint: "{{ cluster_fqdn }}:443"
 apiServer:
   certSANs:
     - "{{ cluster_fqdn }}"

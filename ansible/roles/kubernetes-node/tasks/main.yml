@@ -11,7 +11,7 @@
 - name: Wait for K8S API service to be accessible
   wait_for:
     host: "{{ cluster_fqdn }}"
-    port: "6443"
+    port: "443"
     sleep: 15
     timeout: 1800
 
