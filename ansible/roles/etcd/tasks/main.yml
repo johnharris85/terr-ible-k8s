@@ -46,7 +46,7 @@
   
 - name: drop kubeadm configuration file
   template:
-    src: etc/kubernetes/kubeadm-etcd.yaml
+    src: etc/kubernetes/kubeadm-etcd.yaml.j2
     dest: /etc/kubernetes/kubeadm-etcd.yaml
 
 - name: generate etcd certificates
@@ -59,3 +59,5 @@
 
 - name: generate etcd static pod manifest
   command: "/usr/bin/kubeadm init phase etcd local --config /etc/kubernetes/kubeadm-etcd.yaml"
+
+# docker run --rm -it --net host -v /etc/kubernetes:/etc/kubernetes k8s.gcr.io/etcd:3.3.10 etcdctl --cert-file /etc/kubernetes/pki/etcd/peer.crt --key-file /etc/kubernetes/pki/etcd/peer.key --ca-file /etc/kubernetes/pki/etcd/ca.crt --endpoints https://$(curl http://169.254.169.254/latest/meta-data/local-ipv4):2379 cluster-health

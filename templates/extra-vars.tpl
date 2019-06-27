@@ -1,5 +1,5 @@
 ---
-kubernetes_version: 1.14.3
+k8s_version: 1.14.3
 cni_version: 0.7.5
 docker_version: "5:18.09.5~3-0~ubuntu-{{ ansible_distribution_release | lower }}"
 cri_tools_version: 1.12.0

@@ -100,4 +100,4 @@ sleep 3
 ssh ubuntu@${etcd1_ip} 'sudo cat /etc/kubernetes/pki/apiserver-etcd-client.key' > ./apiserver-etcd-client.key
 ssh ubuntu@${etcd1_ip} 'sudo cat /etc/kubernetes/pki/apiserver-etcd-client.crt' > ./apiserver-etcd-client.crt
 
-# docker run --rm -it --net host -v /etc/kubernetes:/etc/kubernetes vmware/etcd:3.3.10 etcdctl --cert-file /etc/kubernetes/pki/etcd/peer.crt --key-file /etc/kubernetes/pki/etcd/peer.key --ca-file /etc/kubernetes/pki/etcd/ca.crt --endpoints https://$(curl http://169.254.169.254/latest/meta-data/local-ipv4):2379 cluster-health
+# docker run --rm -it --net host -v /etc/kubernetes:/etc/kubernetes k8s.gcr.io/etcd:3.3.10 etcdctl --cert-file /etc/kubernetes/pki/etcd/peer.crt --key-file /etc/kubernetes/pki/etcd/peer.key --ca-file /etc/kubernetes/pki/etcd/ca.crt --endpoints https://$(curl http://169.254.169.254/latest/meta-data/local-ipv4):2379 cluster-health

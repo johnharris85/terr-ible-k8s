@@ -24,7 +24,6 @@
     - etcd/ca.crt
   register: etcd_certs
   delegate_to: "{{ groups['etcd'][0] }}"
-  when: inventory_hostname == first_master
 
 - name: distribute the certificates
   copy:
@@ -43,8 +42,8 @@
 
 # Add audit-policy in pki folder so it gets mounted by the apiserver container
 - name: Copy audit configuration file
-  template:
-    src: audit-policy.yaml.j2
+  copy:
+    src: etc/kubernetes/pki/audit-policy.yaml
     dest: /etc/kubernetes/pki/audit-policy.yaml
     mode: 0644
 
@@ -55,10 +54,11 @@
 
 - name: Copy ETCD encryption config
   template:
-    src: etcd-encryption-config.yaml.j2
+    src: etc/kubernetes/pki/etcd-encryption-config.yaml.j2
     dest: /etc/kubernetes/pki/etcd-encryption-config.yaml
     mode: 0644
     force: no
+  when: inventory_hostname == first_master
 
 - name: drop kubeadm configuration file
   template:
@@ -67,17 +67,17 @@
     mode: 0644
 
 - name: Pre-pull master images
-  command: kubeadm config images pull --config=/etc/kubernetes/pki/kubeadm-master-config.yaml
+  command: kubeadm config images pull --config=/etc/kubernetes/kubeadm-master-config.yaml
 
 - name: Run kubeadm init
-  command: kubeadm init --config=/etc/kubernetes/pki/kubeadm-master-config.yaml -v 9
+  command: kubeadm init --config=/etc/kubernetes/kubeadm-master-config.yaml -v 9
   args:
     creates: /etc/kubernetes/manifests/kube-apiserver.yaml
   when: inventory_hostname == first_master
 
 - name: Copy calico manifest
   template:
-    src: calico.yaml.j2
+    src: etc/kubernetes/calico.yaml.j2
     dest: /etc/kubernetes/calico.yaml
   when: inventory_hostname == first_master
 
