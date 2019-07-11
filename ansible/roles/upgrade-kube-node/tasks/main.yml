@@ -45,7 +45,7 @@
     node_name: "{{ command_output.content }}"
 
 - name: Drain node
-  command: kubectl drain {{ node_name }} --ignore-daemonsets
+  command: kubectl --kubeconfig=/etc/kubernetes/admin.conf drain {{ node_name }} --ignore-daemonsets
   delegate_to: "{{ groups['master'][0] }}"
 
 - pause:
@@ -79,5 +79,5 @@
     src: etc/kubernetes_community_ami_version.j2
 
 - name: Uncordon node
-  command: kubectl uncordon {{ node_name }}
+  command: kubectl --kubeconfig=/etc/kubernetes/admin.conf uncordon {{ node_name }}
   delegate_to: "{{ groups['master'][0] }}"

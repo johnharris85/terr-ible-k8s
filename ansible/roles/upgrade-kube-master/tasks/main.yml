@@ -36,7 +36,7 @@
   delay: 5
 
 - name: Run kubeadm upgrade
-  command: kubeadm upgrade apply v{{ k8s_version }}
+  command: kubeadm upgrade apply --force v{{ k8s_version }} 
   when: inventory_hostname == first_master
 
 - name: Run kubeadm upgrade
