@@ -2,6 +2,7 @@
 module "etcd" {
   name                = "etcd"
   source              = "terraform-aws-modules/autoscaling/aws"
+  version = "~>2.0"
   asg_name            = "etcd"
   image_id            = "ami-005bdb005fb00e791"
   instance_type       = "t2.medium"

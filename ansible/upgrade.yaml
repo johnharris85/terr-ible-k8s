@@ -1,15 +1,24 @@
-apt-mark unhold kubeadm && \
-apt-get update && apt-get install -y kubeadm=1.15.0-00 && \
-apt-mark hold kubeadm
+---
+- hosts: bastion
+  become: yes
+  roles:
+    - kubernetes
+    
+- hosts: etcd
+  serial: 1
+  become: yes
+  roles:
+    - kubernetes
+    - kubeadm-etcd
 
-apt-mark unhold kubelet && \
-apt-get update && apt-get install -y kubelet=1.15.0-00 kubectl=1.15.0-00 && \
-apt-mark hold kubelet
-systemctl restart kubelet
+- hosts: master
+  serial: 1
+  become: yes
+  roles:
+    - upgrade-kube-master
 
-
-kubectl drain $NODE --ignore-daemonsets
-
-sudo kubeadm upgrade node
-
-kubectl uncordon $NODE
+- hosts: node
+  serial: 1
+  become: yes
+  roles:
+    - upgrade-kube-node

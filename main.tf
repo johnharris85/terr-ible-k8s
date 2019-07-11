@@ -8,6 +8,7 @@
 
 module "main_vpc" {
   source             = "terraform-aws-modules/vpc/aws"
+  version = "~>1.0"
   name               = "${var.main_vpc_name}"
   cidr               = "${var.main_vpc_cidr}"
   azs                = "${var.main_vpc_azs}"

@@ -25,7 +25,14 @@
 - name: Parse bootstrap token and ca cert hash 
   set_fact:
     bootstrap_token: "{{ kubeadm_join.split(' ')[4] }}"
+    ca_cert_hash: "{{ kubeadm_join.split(' ')[6] }}"
+  when: k8s_version.split('.')[1] |int <= 13
+
+- name: Parse bootstrap token and ca cert hash 
+  set_fact:
+    bootstrap_token: "{{ kubeadm_join.split(' ')[4] }}"
     ca_cert_hash: "{{ kubeadm_join.split(' ')[10] }}"
+  when: k8s_version.split('.')[1] |int > 13
 
 - name: Create join config
   template:

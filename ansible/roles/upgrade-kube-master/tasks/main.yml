@@ -1,0 +1,68 @@
+---
+- name: Set first master fact
+  set_fact:
+    first_master: "{{ groups['master'][0] }}"
+
+- debug: var=first_master
+
+- name: add the kubernetes apt repo key
+  apt_key:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    state: present
+  register: apt_key_result
+  until: apt_key_result is success
+  retries: 5
+  delay: 5
+
+- name: add the kubernetes apt repo
+  apt_repository:
+    repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+    update_cache: True
+    state: present
+  register: apt_respository_result
+  until: apt_respository_result is success
+  retries: 5
+  delay: 5
+
+- name: upgrade kubeadm packages
+  apt:
+    update_cache: True
+    cache_valid_time: 60
+    name:
+      - "kubeadm={{ k8s_version }}-00"
+  register: apt_result
+  until: apt_result is success
+  retries: 5
+  delay: 5
+
+- name: Run kubeadm upgrade
+  command: kubeadm upgrade apply v{{ k8s_version }}
+  when: inventory_hostname == first_master
+
+- name: Run kubeadm upgrade
+  command: kubeadm upgrade node experimental-control-plane
+  when: inventory_hostname != first_master
+
+- name: upgrade kubernetes packages
+  apt:
+    update_cache: True
+    cache_valid_time: 60
+    name:
+      - "kubelet={{ k8s_version }}-00"
+      - "kubectl={{ k8s_version }}-00"
+  register: apt_result
+  until: apt_result is success
+  retries: 5
+  delay: 5
+
+- name: restart service kubelet
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: kubelet
+    enabled: yes
+
+- name: set kubernetes version file
+  template:
+    dest: /etc/kubernetes_community_ami_version
+    src: etc/kubernetes_community_ami_version.j2

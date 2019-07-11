@@ -1,6 +1,7 @@
 ######### CONTROL-PLANE ##############
 module "elb_control_plane" {
   source = "terraform-aws-modules/elb/aws"
+  version = "~>1.0"
 
   name = "elb-control-plane"
 

@@ -1,0 +1,3 @@
+---
+- name: generate etcd static pod manifest
+  command: "/usr/bin/kubeadm init phase etcd local --config /etc/kubernetes/kubeadm-etcd.yaml"
