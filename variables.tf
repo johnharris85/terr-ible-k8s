@@ -49,3 +49,11 @@ variable "bootstrap_ETCD" {
 variable "bootstrap_PAUSE" {
   type = "string"
 }
+
+variable "git_repo" {
+  type = "string"
+}
+
+variable "cluster_name" {
+  type = "string"
+}

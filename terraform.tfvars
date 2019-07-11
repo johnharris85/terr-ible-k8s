@@ -23,3 +23,7 @@ bootstrap_COREDNS = "v1.3.1"
 bootstrap_ETCD = "v3.3.10"
 
 bootstrap_PAUSE = "3.1"
+
+git_repo = "https://github.com/johnharris85/terr-ible-k8s.git"
+
+cluster_name = "jh-k8s"

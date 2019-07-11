@@ -6,7 +6,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 mkdir -p /bootstrap
 cd /bootstrap
-git clone https://github.com/johnharris85/terr-ible-k8s.git 
+git clone ${git_repo} terr-ible-k8s
 cd terr-ible-k8s
 
 cat << EOF >> /bootstrap/inventory.ini

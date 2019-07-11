@@ -8,7 +8,7 @@
 
 module "main_vpc" {
   source             = "terraform-aws-modules/vpc/aws"
-  version = "~>1.0"
+  version            = "~>1.0"
   name               = "${var.main_vpc_name}"
   cidr               = "${var.main_vpc_cidr}"
   azs                = "${var.main_vpc_azs}"
@@ -83,15 +83,15 @@ data "template_file" "inventory" {
   template = "${file("${path.module}/templates/inventory.tpl")}"
 
   vars {
-    cp1_ip                   = "${data.aws_instance.controlplane1.private_ip}"
-    cp2_ip                   = "${data.aws_instance.controlplane2.private_ip}"
-    cp3_ip                   = "${data.aws_instance.controlplane3.private_ip}"
-    etcd1_ip                 = "${data.aws_instances.etcd.private_ips[0]}"
-    etcd2_ip                 = "${data.aws_instances.etcd.private_ips[1]}"
-    etcd3_ip                 = "${data.aws_instances.etcd.private_ips[2]}"
-    wk1_ip                   = "${data.aws_instances.workers.private_ips[0]}"
-    wk2_ip                   = "${data.aws_instances.workers.private_ips[1]}"
-    wk3_ip                   = "${data.aws_instances.workers.private_ips[2]}"
+    cp1_ip   = "${data.aws_instance.controlplane1.private_ip}"
+    cp2_ip   = "${data.aws_instance.controlplane2.private_ip}"
+    cp3_ip   = "${data.aws_instance.controlplane3.private_ip}"
+    etcd1_ip = "${data.aws_instances.etcd.private_ips[0]}"
+    etcd2_ip = "${data.aws_instances.etcd.private_ips[1]}"
+    etcd3_ip = "${data.aws_instances.etcd.private_ips[2]}"
+    wk1_ip   = "${data.aws_instances.workers.private_ips[0]}"
+    wk2_ip   = "${data.aws_instances.workers.private_ips[1]}"
+    wk3_ip   = "${data.aws_instances.workers.private_ips[2]}"
   }
 }
 
@@ -99,6 +99,7 @@ data "template_file" "extra_vars" {
   template = "${file("${path.module}/templates/extra-vars.tpl")}"
 
   vars {
-    lb_fqdn                   = "${module.elb_control_plane.this_elb_dns_name}"
+    lb_fqdn      = "${module.elb_control_plane.this_elb_dns_name}"
+    cluster_name = "${var.cluster_name}"
   }
 }

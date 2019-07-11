@@ -7,4 +7,4 @@ coredns_version: 1.3.1
 etcd_version: 3.3.10
 pause_version: 3.1
 cluster_fqdn: ${lb_fqdn}
-cluster_name: jh-k8s
+cluster_name: ${cluster_name}
