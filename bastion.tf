@@ -4,7 +4,7 @@ module "bastion" {
   source              = "terraform-aws-modules/autoscaling/aws"
   version             = "~>2.0"
   asg_name            = "bastion"
-  image_id            = "ami-005bdb005fb00e791"
+  image_id            = "${var.image_id}"
   instance_type       = "t2.medium"
   key_name            = "kubeadm-ec2"
   health_check_type   = "EC2"

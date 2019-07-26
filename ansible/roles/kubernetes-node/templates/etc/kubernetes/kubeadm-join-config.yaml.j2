@@ -4,7 +4,7 @@ kind: JoinConfiguration
 discovery:
   bootstrapToken:
     token: {{ bootstrap_token }}
-    apiServerEndpoint: {{ cluster_fqdn }}:443
+    apiServerEndpoint: {{ cluster_fqdn }}:{{ api_lb_port }}
     caCertHashes:
       - {{ ca_cert_hash }}
 nodeRegistration:

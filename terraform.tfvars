@@ -27,3 +27,9 @@ bootstrap_PAUSE = "3.1"
 git_repo = "https://github.com/johnharris85/terr-ible-k8s.git"
 
 cluster_name = "jh-k8s"
+
+image_id = "ami-005bdb005fb00e791"
+
+api_lb_port = "443"
+
+api_instance_port = "6443"

@@ -8,3 +8,5 @@ etcd_version: 3.3.10
 pause_version: 3.1
 cluster_fqdn: ${lb_fqdn}
 cluster_name: ${cluster_name}
+api_lb_port: ${api_lb_port}
+api_instance_port: ${api_instance_port}

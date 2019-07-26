@@ -4,7 +4,7 @@ module "control_plane" {
   source               = "terraform-aws-modules/autoscaling/aws"
   version = "~>2.0"
   asg_name             = "control-plane"
-  image_id             = "ami-005bdb005fb00e791"
+  image_id             = "${var.image_id}"
   instance_type        = "t2.medium"
   key_name             = "kubeadm-ec2"
   health_check_type    = "EC2"
@@ -93,8 +93,8 @@ resource "aws_security_group_rule" "bastion-in-controlplane" {
 resource "aws_security_group_rule" "lb-controlplane" {
   description              = "lb to controlplane"
   type                     = "ingress"
-  from_port                = 6443
-  to_port                  = 6443
+  from_port                = "${var.api_instance_port}"
+  to_port                  = "${var.api_instance_port}"
   protocol                 = "tcp"
   source_security_group_id = "${aws_security_group.lb.id}"
   security_group_id        = "${aws_security_group.control-plane.id}"

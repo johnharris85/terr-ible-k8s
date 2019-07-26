@@ -57,3 +57,15 @@ variable "git_repo" {
 variable "cluster_name" {
   type = "string"
 }
+
+variable "image_id" {
+  type = "string"
+}
+
+variable "api_lb_port" {
+  type = "string"
+}
+
+variable "api_instance_port" {
+  type = "string"
+}

@@ -11,16 +11,16 @@ module "elb_control_plane" {
 
   listener = [
     {
-      instance_port     = "6443"
+      instance_port     = "${var.api_instance_port}"
       instance_protocol = "TCP"
-      lb_port           = "443"
+      lb_port           = "${var.api_lb_port}"
       lb_protocol       = "TCP"
     },
   ]
 
   health_check = [
     {
-      target              = "TCP:6443"
+      target              = "TCP:${var.api_instance_port}"
       interval            = 30
       healthy_threshold   = 2
       unhealthy_threshold = 2
@@ -57,8 +57,8 @@ resource "aws_security_group_rule" "lb-outbound" {
 resource "aws_security_group_rule" "lb-in-controlplane" {
   description       = "controlplane-lb in"
   type              = "ingress"
-  from_port         = 443
-  to_port           = 443
+  from_port         = "${var.api_lb_port}"
+  to_port           = "${var.api_lb_port}"
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.lb.id}"
