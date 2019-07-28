@@ -56,17 +56,17 @@
     state: directory
     mode: 0755
 
-- name: Ensure 10-kubeadm.conf exists
-  copy:
-    src: etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    mode: 0644
+# - name: Ensure 10-kubeadm.conf exists
+#   copy:
+#     src: etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+#     dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+#     mode: 0644
 
-- name: Ensure 20-cloud-provider.conf exists
-  copy:
-    src: etc/systemd/system/kubelet.service.d/20-cloud-provider.conf
-    dest: /etc/systemd/system/kubelet.service.d/20-cloud-provider.conf
-    mode: 0644
+# - name: Ensure 20-cloud-provider.conf exists
+#   copy:
+#     src: etc/systemd/system/kubelet.service.d/20-cloud-provider.conf
+#     dest: /etc/systemd/system/kubelet.service.d/20-cloud-provider.conf
+#     mode: 0644
 
 - name: restart service kubelet
   systemd:

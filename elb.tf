@@ -20,7 +20,7 @@ module "elb_control_plane" {
 
   health_check = [
     {
-      target              = "TCP:${var.api_instance_port}"
+      target              = "SSL:${var.api_instance_port}"
       interval            = 30
       healthy_threshold   = 2
       unhealthy_threshold = 2
