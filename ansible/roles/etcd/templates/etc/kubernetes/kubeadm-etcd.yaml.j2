@@ -9,7 +9,7 @@ nodeRegistration:
     cgroup-driver: "systemd"
     runtime-cgroups: "/systemd/system.slice"
     kubelet-cgroups: "/systemd/system.slice"
-    register-node: false
+    register-node: "false"
 ---
 apiVersion: "kubeadm.k8s.io/v1beta1"
 kind: ClusterConfiguration
