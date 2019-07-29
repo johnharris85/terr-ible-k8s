@@ -11,9 +11,6 @@
 #     enabled: True
 #     daemon_reload: True
 
-- name: generate kubeadm flags
-  command: "/usr/bin/kubeadm init phase kubelet-start --config /etc/kubernetes/kubeadm-etcd.yaml"
-
 - name: generate etcd ca certificate
   command: /usr/bin/kubeadm init phase certs etcd-ca
   run_once: True
@@ -59,6 +56,9 @@
   - etcd-peer
   - etcd-healthcheck-client
   - apiserver-etcd-client
+
+- name: generate kubeadm flags
+  command: "/usr/bin/kubeadm init phase kubelet-start --config /etc/kubernetes/kubeadm-etcd.yaml"
 
 - include_role:
     name: kubeadm-etcd
