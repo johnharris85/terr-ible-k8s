@@ -1,15 +1,15 @@
 ---
-# - name: configure kubelet
-#   copy:
-#     src: etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
-#     dest: /etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
+- name: configure kubelet
+  copy:
+    src: etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
+    dest: /etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
 
-# - name: enable kubelet service
-#   systemd:
-#     name: kubelet
-#     state: restarted # TODO: Only restart the kubelet if the above configuration changed
-#     enabled: True
-#     daemon_reload: True
+- name: enable kubelet service
+  systemd:
+    name: kubelet
+    state: restarted # TODO: Only restart the kubelet if the above configuration changed
+    enabled: True
+    daemon_reload: True
 
 - name: generate etcd ca certificate
   command: /usr/bin/kubeadm init phase certs etcd-ca
@@ -56,9 +56,6 @@
   - etcd-peer
   - etcd-healthcheck-client
   - apiserver-etcd-client
-
-- name: generate kubeadm flags
-  command: "/usr/bin/kubeadm init phase kubelet-start --config /etc/kubernetes/kubeadm-etcd.yaml"
 
 - include_role:
     name: kubeadm-etcd

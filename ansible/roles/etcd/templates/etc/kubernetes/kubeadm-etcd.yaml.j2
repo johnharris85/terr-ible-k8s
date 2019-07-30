@@ -1,16 +1,4 @@
 ---
-apiVersion: kubeadm.k8s.io/v1beta1
-kind: InitConfiguration
-nodeRegistration:
-  kubeletExtraArgs:
-    feature-gates: "RuntimeClass=false"
-    address: "127.0.0.1"
-    pod-manifest-path: "/etc/kubernetes/manifests"
-    cgroup-driver: "systemd"
-    runtime-cgroups: "/systemd/system.slice"
-    kubelet-cgroups: "/systemd/system.slice"
-    register-node: "false"
----
 apiVersion: "kubeadm.k8s.io/v1beta1"
 kind: ClusterConfiguration
 kubernetesVersion: "{{ k8s_version }}"
