@@ -69,3 +69,7 @@ variable "api_lb_port" {
 variable "api_instance_port" {
   type = "string"
 }
+
+variable "pod_cidr" {
+  type = "string"
+}

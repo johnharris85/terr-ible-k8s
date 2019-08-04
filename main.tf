@@ -103,5 +103,6 @@ data "template_file" "extra_vars" {
     cluster_name      = "${var.cluster_name}"
     api_lb_port       = "${var.api_lb_port}"
     api_instance_port = "${var.api_instance_port}"
+    pod_cidr = "${var.pod_cidr}"
   }
 }

@@ -84,17 +84,35 @@
     creates: /etc/kubernetes/manifests/kube-apiserver.yaml
   when: inventory_hostname == first_master
 
-- name: Copy calico manifest
-  template:
-    src: etc/kubernetes/calico.yaml.j2
-    dest: /etc/kubernetes/calico.yaml
-  when: inventory_hostname == first_master
+- name: Calico
+  block:
+  - name: Copy calico manifest
+    template:
+      src: etc/kubernetes/calico.yaml.j2
+      dest: /etc/kubernetes/calico.yaml
+    when: inventory_hostname == first_master
 
-- name: Apply calico manifest
-  command: kubectl apply -f /etc/kubernetes/calico.yaml
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
-  when: inventory_hostname == first_master
+  - name: Apply calico manifest
+    command: kubectl apply -f /etc/kubernetes/calico.yaml
+    environment:
+      KUBECONFIG: /etc/kubernetes/admin.conf
+    when: inventory_hostname == first_master
+  when: networking == calico
+
+- name: Canal
+  block:
+  - name: Copy canal manifest
+    template:
+      src: etc/kubernetes/canal.yaml.j2
+      dest: /etc/kubernetes/canal.yaml
+    when: inventory_hostname == first_master
+
+  - name: Apply canal manifest
+    command: kubectl apply -f /etc/kubernetes/canal.yaml
+    environment:
+      KUBECONFIG: /etc/kubernetes/admin.conf
+    when: inventory_hostname == first_master
+  when: networking == canal
 
 - name: Create join token
   command: kubeadm token create --print-join-command --ttl 30m
