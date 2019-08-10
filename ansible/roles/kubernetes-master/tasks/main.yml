@@ -97,7 +97,7 @@
     environment:
       KUBECONFIG: /etc/kubernetes/admin.conf
     when: inventory_hostname == first_master
-  when: networking == calico
+  when: networking == 'calico'
 
 - name: Canal
   block:
@@ -112,7 +112,7 @@
     environment:
       KUBECONFIG: /etc/kubernetes/admin.conf
     when: inventory_hostname == first_master
-  when: networking == canal
+  when: networking == 'canal'
 
 - name: Create join token
   command: kubeadm token create --print-join-command --ttl 30m

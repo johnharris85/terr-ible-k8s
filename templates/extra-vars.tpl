@@ -11,3 +11,4 @@ cluster_name: ${cluster_name}
 api_lb_port: ${api_lb_port}
 api_instance_port: ${api_instance_port}
 pod_cidr: ${pod_cidr}
+networking: ${networking}

@@ -73,3 +73,7 @@ variable "api_instance_port" {
 variable "pod_cidr" {
   type = "string"
 }
+
+variable "networking" {
+  type = "string"
+}

@@ -104,5 +104,6 @@ data "template_file" "extra_vars" {
     api_lb_port       = "${var.api_lb_port}"
     api_instance_port = "${var.api_instance_port}"
     pod_cidr = "${var.pod_cidr}"
+    networking = "${var.networking}"
   }
 }

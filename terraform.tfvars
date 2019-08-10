@@ -35,3 +35,5 @@ api_lb_port = "443"
 api_instance_port = "6443"
 
 pod_cidr = "192.168.0.0/16"
+
+networking = "calico"

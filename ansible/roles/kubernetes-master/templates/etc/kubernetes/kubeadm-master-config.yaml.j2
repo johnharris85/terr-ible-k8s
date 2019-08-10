@@ -24,12 +24,13 @@ apiServer:
   certSANs:
     - "{{ cluster_fqdn }}"
   extraArgs:
+    storage-media-type: "application/json"
     audit-log-maxage: "30"
     audit-log-maxbackup: "3"
     audit-log-maxsize: "100"
     audit-log-path: "/var/log/k8s-audit/audit.log"
     audit-policy-file: "/etc/kubernetes/pki/audit-policy.yaml"
-{% if networking == canal %}
+{% if networking == 'canal' %}
 controllerManager:
   extraArgs:
     allocate-node-cidrs: "true"
