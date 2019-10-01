@@ -10,6 +10,11 @@
     path: /etc/kubernetes/manifests/kube-apiserver.yaml
   register: kubeadm_apiserver_manifest
 
+- name: ensure pki directory exists	
+  file:	
+    dest: /etc/kubernetes/pki	
+    state: directory
+
 - name: Create k8s-audit log directory
   file:
     path: "{{ item }}"
@@ -42,8 +47,10 @@
   register: cert_key
   when: inventory_hostname == first_master
 
+- debug: var=cert_key
+
 - set_fact:
-    cert_key: "{{ cert_key.content }}"
+    certificate_key: "{{ cert_key.stdout }}"
 
 - name: drop kubeadm configuration file
   template:
@@ -112,7 +119,7 @@
 - debug: var=kubeadm_join
 
 - name: Run kubeadm join
-  command: "{{ kubeadm_join }} --node-name={{ local_dns }} --control-plane --certificate-key {{ cert_key }}"
+  command: "{{ kubeadm_join }} --node-name={{ local_dns }} --control-plane --certificate-key {{ certificate_key }}"
   args:
     creates: /etc/kubernetes/manifests/kube-apiserver.yaml
   when: inventory_hostname != first_master

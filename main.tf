@@ -59,16 +59,6 @@ data "aws_instance" "controlplane3" {
   instance_id = "${data.aws_instances.controlplane.ids[2]}"
 }
 
-data "aws_instances" "etcd" {
-  depends_on = ["module.etcd"]
-
-  instance_tags = {
-    Role = "etcd"
-  }
-
-  instance_state_names = ["running"]
-}
-
 data "aws_instances" "workers" {
   depends_on = ["module.workers"]
 
