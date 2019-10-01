@@ -51,6 +51,7 @@
 
 - set_fact:
     certificate_key: "{{ cert_key.stdout }}"
+  run_once: True
 
 - name: drop kubeadm configuration file
   template:
@@ -119,7 +120,7 @@
 - debug: var=kubeadm_join
 
 - name: Run kubeadm join
-  command: "{{ kubeadm_join }} --node-name={{ local_dns }} --control-plane --certificate-key {{ certificate_key }}"
+  command: "{{ kubeadm_join }} --node-name={{ local_dns }} --control-plane --certificate-key {{ certificate_key }} -v 9"
   args:
     creates: /etc/kubernetes/manifests/kube-apiserver.yaml
   when: inventory_hostname != first_master
