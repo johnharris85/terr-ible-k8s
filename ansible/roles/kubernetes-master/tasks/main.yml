@@ -49,6 +49,8 @@
     certificate_key: "{{ cert_key.stdout|trim }}"
   run_once: True
 
+- debug: var=certificate_key
+
 - name: drop kubeadm configuration file
   template:
     src: etc/kubernetes/kubeadm-master-config.yaml.j2
@@ -68,7 +70,7 @@
     local_dns: "{{ command_output.content }}"
 
 - name: Run kubeadm init
-  command: kubeadm init --node-name={{ local_dns }} --config=/etc/kubernetes/kubeadm-master-config.yaml --v=3 --upload-certs
+  command: kubeadm init --node-name={{ local_dns }} --config=/etc/kubernetes/kubeadm-master-config.yaml --v=5 --upload-certs
   args:
     creates: /etc/kubernetes/manifests/kube-apiserver.yaml
   when: inventory_hostname == first_master
@@ -116,7 +118,7 @@
 - debug: var=kubeadm_join
 
 - name: Run kubeadm join
-  command: "{{ kubeadm_join }} --node-name={{ local_dns }} --control-plane --certificate-key {{ certificate_key }} --v=3"
+  command: "{{ kubeadm_join }} --node-name={{ local_dns }} --control-plane --certificate-key {{ certificate_key }} --v=5"
   args:
     creates: /etc/kubernetes/manifests/kube-apiserver.yaml
   when: inventory_hostname != first_master

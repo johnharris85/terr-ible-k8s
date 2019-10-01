@@ -40,3 +40,7 @@ controllerManager:
 etcd:
   local:
     dataDir: /var/lib/etcd
+networking:
+  serviceSubnet: "10.96.0.0/12"
+  podSubnet: "{{ pod_cidr }}"
+  dnsDomain: "cluster.local"
