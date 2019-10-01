@@ -9,7 +9,7 @@ discovery:
       - {{ ca_cert_hash }}
 nodeRegistration:
   kubeletExtraArgs:
-    node-labels: node-role.kubernetes.io/worker=
+    node-labels: node.kubernetes.io/worker=
     event-qps: "0"
     dynamic-config-dir: "/etc/kubelet/config"
     pod-manifest-path: "/etc/kubernetes/manifests"
