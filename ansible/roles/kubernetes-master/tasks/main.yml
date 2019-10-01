@@ -10,17 +10,13 @@
     path: /etc/kubernetes/manifests/kube-apiserver.yaml
   register: kubeadm_apiserver_manifest
 
-- name: ensure pki directory exists	
-  file:	
-    dest: /etc/kubernetes/pki	
-    state: directory
-
 - name: Create k8s-audit log directory
   file:
     path: "{{ item }}"
     state: directory
   with_items:
     - /var/log/k8s-audit/
+    - /etc/kubernetes/pki/
 
 # Add audit-policy in pki folder so it gets mounted by the apiserver container
 - name: Copy audit configuration file
@@ -50,7 +46,7 @@
 - debug: var=cert_key
 
 - set_fact:
-    certificate_key: "{{ cert_key.stdout }}"
+    certificate_key: "{{ cert_key.stdout|trim }}"
   run_once: True
 
 - name: drop kubeadm configuration file
