@@ -1,6 +1,7 @@
 ---
-apiVersion: kubeadm.k8s.io/v1beta1
+apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
+certificateKey: "{{ cert_key }}"
 localAPIEndpoint:
   bindPort: {{ api_instance_port }}
 nodeRegistration:
@@ -16,7 +17,7 @@ nodeRegistration:
     cni-bin-dir: "/opt/cni/bin"
     cloud-provider: "aws"
 ---
-apiVersion: kubeadm.k8s.io/v1beta1
+apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
 kubernetesVersion: "{{ k8s_version }}"
 controlPlaneEndpoint: "{{ cluster_fqdn }}:{{ api_lb_port }}"
@@ -37,11 +38,5 @@ controllerManager:
     cluster-cidr: "{{ pod_cidr }}"
 {% endif %}
 etcd:
-  external:
-    endpoints:
-    - https://{{ groups['etcd'][0] }}:2379
-    - https://{{ groups['etcd'][1] }}:2379
-    - https://{{ groups['etcd'][2] }}:2379
-    caFile: /etc/kubernetes/pki/etcd/ca.crt
-    certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
-    keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
+  local:
+    dataDir: /var/lib/etcd

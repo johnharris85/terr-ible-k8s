@@ -5,14 +5,6 @@
     - common
     - docker
     - kubernetes
-    
-- hosts: etcd
-  become: yes
-  roles:
-    - common
-    - docker
-    - kubernetes
-    - etcd
 
 - hosts: master
   become: yes

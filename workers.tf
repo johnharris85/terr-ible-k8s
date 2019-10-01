@@ -12,9 +12,9 @@ module "workers" {
   security_groups     = ["${aws_security_group.workers.id}"]
   vpc_zone_identifier = "${module.main_vpc.private_subnets}"
   # user_data           = "${data.template_file.user_data_workers.rendered}"
-  min_size            = 3
-  max_size            = 6
-  desired_capacity    = 3
+  min_size            = 5
+  max_size            = 8
+  desired_capacity    = 5
 
   root_block_device = [
     {

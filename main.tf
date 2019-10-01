@@ -86,12 +86,11 @@ data "template_file" "inventory" {
     cp1_ip   = "${data.aws_instance.controlplane1.private_ip}"
     cp2_ip   = "${data.aws_instance.controlplane2.private_ip}"
     cp3_ip   = "${data.aws_instance.controlplane3.private_ip}"
-    etcd1_ip = "${data.aws_instances.etcd.private_ips[0]}"
-    etcd2_ip = "${data.aws_instances.etcd.private_ips[1]}"
-    etcd3_ip = "${data.aws_instances.etcd.private_ips[2]}"
     wk1_ip   = "${data.aws_instances.workers.private_ips[0]}"
     wk2_ip   = "${data.aws_instances.workers.private_ips[1]}"
     wk3_ip   = "${data.aws_instances.workers.private_ips[2]}"
+    wk4_ip   = "${data.aws_instances.workers.private_ips[3]}"
+    wk5_ip   = "${data.aws_instances.workers.private_ips[4]}"
   }
 }
 
