@@ -151,7 +151,7 @@
   when: inventory_hostname != first_master
 
 - name: Run kubeadm join
-  command: "{{ kubeadm_join }} --node-name={{ local_dns }} --experimental-control-plane"
+  command: "{{ kubeadm_join }} --node-name={{ local_dns }}"
   args:
     creates: /etc/kubernetes/manifests/kube-apiserver.yaml
   when: inventory_hostname != first_master
