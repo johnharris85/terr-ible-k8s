@@ -83,12 +83,9 @@
       dest: /etc/kubernetes/calico.yaml
     when: inventory_hostname == first_master
 
-- name: Wait for K8S API service to be accessible
-  wait_for:
-    host: "{{ cluster_fqdn }}"
-    port: "{{ api_lb_port }}"
-    sleep: 15
-    timeout: 1800
+  - pause:
+    seconds: 60
+    when: inventory_hostname == first_master
 
   - name: Apply calico manifest
     command: kubectl apply -f /etc/kubernetes/calico.yaml
