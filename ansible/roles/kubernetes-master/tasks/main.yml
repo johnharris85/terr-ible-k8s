@@ -84,7 +84,7 @@
     when: inventory_hostname == first_master
 
   - pause:
-    seconds: 60
+      seconds: 60
     when: inventory_hostname == first_master
 
   - name: Apply calico manifest
