@@ -1,22 +1,22 @@
 ######### IAM ROLES ##############
 resource "aws_iam_instance_profile" "control_plane_provider" {
-  name = "control_plane_provider"
-  role = "${aws_iam_role.control_plane_provider.name}"
+  name = "control_plane_provider-${var.cluster_name}"
+  role = aws_iam_role.control_plane_provider.name
 }
 
 resource "aws_iam_role" "control_plane_provider" {
-  name = "control_plane_provider"
-  assume_role_policy = "${data.aws_iam_policy_document.instance-assume-role-policy.json}"
+  name               = "control_plane_provider-${var.cluster_name}"
+  assume_role_policy = data.aws_iam_policy_document.instance-assume-role-policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "attach-cloudprovider-controlplane" {
   # This is a hack until 1st class support gets merged into the eks-terraform module
-  role       = "${aws_iam_role.control_plane_provider.name}"
-  policy_arn = "${aws_iam_policy.control_plane_provider.arn}"
+  role       = aws_iam_role.control_plane_provider.name
+  policy_arn = aws_iam_policy.control_plane_provider.arn
 }
 
 resource "aws_iam_policy" "control_plane_provider" {
-  name = "control_plane_provider"
+  name = "control_plane_provider-${var.cluster_name}"
 
   policy = <<EOF
 {
@@ -87,26 +87,27 @@ resource "aws_iam_policy" "control_plane_provider" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_instance_profile" "worker_node_provider" {
-  name = "worker_node_provider"
-  role = "${aws_iam_role.worker_node_provider.name}"
+  name = "worker_node_provider-${var.cluster_name}"
+  role = aws_iam_role.worker_node_provider.name
 }
 
 resource "aws_iam_role" "worker_node_provider" {
-  name = "worker_node_provider"
-  assume_role_policy = "${data.aws_iam_policy_document.instance-assume-role-policy.json}"
+  name               = "worker_node_provider-${var.cluster_name}"
+  assume_role_policy = data.aws_iam_policy_document.instance-assume-role-policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "attach-cloudprovider-worker" {
   # This is a hack until 1st class support gets merged into the eks-terraform module
-  role       = "${aws_iam_role.worker_node_provider.name}"
-  policy_arn = "${aws_iam_policy.worker_node_provider.arn}"
+  role       = aws_iam_role.worker_node_provider.name
+  policy_arn = aws_iam_policy.worker_node_provider.arn
 }
 
 resource "aws_iam_policy" "worker_node_provider" {
-  name = "worker_node_provider"
+  name = "worker_node_provider-${var.cluster_name}"
 
   policy = <<EOF
 {
@@ -130,6 +131,7 @@ resource "aws_iam_policy" "worker_node_provider" {
     ]
 }
 EOF
+
 }
 
 data "aws_iam_policy_document" "instance-assume-role-policy" {
@@ -142,3 +144,4 @@ data "aws_iam_policy_document" "instance-assume-role-policy" {
     }
   }
 }
+

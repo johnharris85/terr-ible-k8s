@@ -1,79 +1,80 @@
 variable "main_vpc_aws_region" {
-  type = "string"
+  type = string
 }
 
 variable "main_vpc_name" {
-  type = "string"
+  type = string
 }
 
 variable "main_vpc_azs" {
-  type = "list"
+  type = list(string)
 }
 
 variable "main_vpc_cidr" {
-  type = "string"
+  type = string
 }
 
 variable "main_vpc_private_subnets" {
-  type = "list"
+  type = list(string)
 }
 
 variable "main_vpc_public_subnets" {
-  type = "list"
+  type = list(string)
 }
 
 variable "bootstrap_docker_version" {
-  type = "string"
+  type = string
 }
 
 variable "bootstrap_K8S_VERSION" {
-  type = "string"
+  type = string
 }
 
 variable "bootstrap_CNI_VERSION" {
-  type = "string"
+  type = string
 }
 
 variable "bootstrap_CRI_TOOLS" {
-  type = "string"
+  type = string
 }
 
 variable "bootstrap_COREDNS" {
-  type = "string"
+  type = string
 }
 
 variable "bootstrap_ETCD" {
-  type = "string"
+  type = string
 }
 
 variable "bootstrap_PAUSE" {
-  type = "string"
+  type = string
 }
 
 variable "git_repo" {
-  type = "string"
+  type = string
 }
 
 variable "cluster_name" {
-  type = "string"
+  type = string
 }
 
 variable "image_id" {
-  type = "string"
+  type = string
 }
 
 variable "api_lb_port" {
-  type = "string"
+  type = string
 }
 
 variable "api_instance_port" {
-  type = "string"
+  type = string
 }
 
 variable "pod_cidr" {
-  type = "string"
+  type = string
 }
 
 variable "networking" {
-  type = "string"
+  type = string
 }
+
