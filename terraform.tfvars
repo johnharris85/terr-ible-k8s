@@ -1,5 +1,5 @@
 # Main Changes
-main_vpc_name = "kubeadm-testing1"
+main_vpc_name = "jh-k8s"
 
 main_vpc_cidr = "10.3.0.0/16"
 
@@ -7,7 +7,7 @@ main_vpc_private_subnets = ["10.3.1.0/24", "10.3.2.0/24", "10.3.3.0/24"]
 
 main_vpc_public_subnets = ["10.3.4.0/24", "10.3.5.0/24", "10.3.6.0/24"]
 
-cluster_name = "jh-k8s1"
+cluster_name = "jh-k8s"
 
 main_vpc_azs = ["us-west-2a", "us-west-2b", "us-west-2c"]
 
