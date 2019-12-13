@@ -26,9 +26,9 @@ apiServer:
     - "{{ cluster_fqdn }}"
   extraArgs:
     oidc-issuer-url: https://dex-pw.k16opus.info/dex
-    oidc-client-id: kubelogin
+    oidc-client-id: kube-login
     oidc-username-claim: name
-    oidc-username-prefix: -
+    oidc-username-prefix: "-"
     oidc-groups-claim: groups
     storage-media-type: "application/json"
     audit-log-maxage: "30"
